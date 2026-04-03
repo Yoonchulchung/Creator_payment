@@ -1,7 +1,9 @@
 package com.example.demo.student.domain.entity;
 
 import com.example.demo.global.entity.BaseEntity;
+import com.example.demo.user.domain.entity.UserEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +17,10 @@ public class StudentEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private UserEntity user;
+
     @Column(nullable = false, unique = true, updatable = false)
     private String studentId;
 
@@ -22,7 +28,8 @@ public class StudentEntity extends BaseEntity {
     private String name;
 
     @Builder
-    public StudentEntity(String name) {
+    public StudentEntity(UserEntity user, String name) {
+        this.user = user;
         this.name = name;
     }
 

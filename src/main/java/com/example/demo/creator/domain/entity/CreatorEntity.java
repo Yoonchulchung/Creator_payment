@@ -1,6 +1,7 @@
 package com.example.demo.creator.domain.entity;
 
 import com.example.demo.global.entity.BaseEntity;
+import com.example.demo.user.domain.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,10 @@ public class CreatorEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private UserEntity user;
+
     @Column(nullable = false, unique = true, updatable = false)
     private String creatorId;
 
@@ -23,7 +28,8 @@ public class CreatorEntity extends BaseEntity {
     private String name;
 
     @Builder
-    public CreatorEntity(String name) {
+    public CreatorEntity(UserEntity user, String name) {
+        this.user = user;
         this.name = name;
     }
 
