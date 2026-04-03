@@ -21,9 +21,6 @@ public class StudentEntity extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
 
-    @Column(nullable = false, unique = true, updatable = false)
-    private String studentId;
-
     @Column(nullable = false)
     private String name;
 
@@ -33,8 +30,4 @@ public class StudentEntity extends BaseEntity {
         this.name = name;
     }
 
-    @PrePersist
-    private void generateStudentId() {
-        this.studentId = "student-" + java.util.UUID.randomUUID().toString().substring(0, 8);
-    }
 }
