@@ -48,9 +48,5 @@ public class SaleRecordEntity extends BaseEntity {
         this.paidAt = paidAt;
         this.comment = comment;
     }
-
-    @PrePersist
-    private void generateSaleId() {
-        this.saleId = "sale-" + java.util.UUID.randomUUID().toString().substring(0, 8);
-    }
+    
 }
