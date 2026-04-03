@@ -1,4 +1,4 @@
-package com.example.demo.payment.domain.entity;
+package com.example.demo.sale.domain.entity;
 
 import com.example.demo.course.domain.entity.CourseEntity;
 import com.example.demo.global.entity.BaseEntity;
@@ -19,6 +19,9 @@ public class SaleRecordEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private String saleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
@@ -46,4 +49,8 @@ public class SaleRecordEntity extends BaseEntity {
         this.comment = comment;
     }
 
+    @PrePersist
+    private void generateSaleId() {
+        this.saleId = "sale-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+    }
 }

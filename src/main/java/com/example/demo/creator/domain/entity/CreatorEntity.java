@@ -29,5 +29,4 @@ public class CreatorEntity extends BaseEntity {
         this.user = user;
         this.name = name;
     }
-    ㄴ
 }

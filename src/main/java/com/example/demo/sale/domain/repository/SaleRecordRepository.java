@@ -17,7 +17,9 @@ public interface SaleRecordRepository extends JpaRepository<SaleRecordEntity, Lo
 
     List<SaleRecordEntity> findAllByCourse(CourseEntity course);
 
-    List<SaleRecordEntity> findAllByPaidAtBetween(LocalDateTime from, LocalDateTime to);
+    List<SaleRecordEntity> findAllByCourseIn(List<CourseEntity> courses);
+
+    List<SaleRecordEntity> findAllByCourseInAndPaidAtBetween(List<CourseEntity> courses, LocalDateTime from, LocalDateTime to);
 
     boolean existsByStudentAndCourse(StudentEntity student, CourseEntity course);
 }

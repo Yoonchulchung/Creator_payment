@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface CreatorRepository extends JpaRepository<CreatorEntity, Long> {
 
+    Optional<CreatorEntity> findByCreatorId(String creatorId);
+
     Optional<CreatorEntity> findByName(String name);
 
     List<CreatorEntity> findAllByDeletedAtIsNull();

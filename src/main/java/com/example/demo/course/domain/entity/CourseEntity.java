@@ -16,6 +16,9 @@ public class CourseEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, updatable = false)
+    private String courseId;
+
     @Column(nullable = false)
     private String title;
 
@@ -24,4 +27,8 @@ public class CourseEntity extends BaseEntity {
         this.title = title;
     }
 
+    @PrePersist
+    private void generateCourseId() {
+        this.courseId = "course-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+    }
 }
