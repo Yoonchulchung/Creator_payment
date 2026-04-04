@@ -20,9 +20,6 @@ public class SaleRecordEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, updatable = false)
-    private String saleId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private CourseEntity course;
@@ -37,16 +34,11 @@ public class SaleRecordEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime paidAt;
 
-    @Column
-    private String comment;
-
     @Builder
-    public SaleRecordEntity(CourseEntity course, StudentEntity student, Long amount, LocalDateTime paidAt, String comment) {
+    public SaleRecordEntity(CourseEntity course, StudentEntity student, Long amount) {
         this.course = course;
         this.student = student;
         this.amount = amount;
-        this.paidAt = paidAt;
-        this.comment = comment;
+        this.paidAt = LocalDateTime.now();
     }
-    
 }

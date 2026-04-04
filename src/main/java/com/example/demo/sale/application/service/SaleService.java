@@ -12,7 +12,7 @@ import com.example.demo.sale.domain.repository.SaleRecordRepository;
 import com.example.demo.sale.presentation.dto.request.SaleCancelRequest;
 import com.example.demo.sale.presentation.dto.response.SaleCancelResponse;
 import com.example.demo.sale.presentation.dto.request.SaleRecordRequest;
-import com.example.demo.sale.presentation.dto.response.SaleRecordResponse;
+import com.example.demo.sale.presentation.dto.response.SaleResponseDto;
 import com.example.demo.student.domain.entity.StudentEntity;
 import com.example.demo.student.domain.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +34,11 @@ public class SaleService {
     private final CreatorCourseRepository creatorCourseRepository;
 
     @Transactional
-    public SaleRecordResponse registerSale(SaleRecordRequest request) {
-        CourseEntity course = courseRepository.findByCourseId(request.courseId())
+    public SaleResponseDto.RecordDto registerSale(SaleRecordRequest request) {
+        CourseEntity course = courseRepository.findById(request.courseId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다."));
 
-        StudentEntity student = studentRepository.findByStudentId(request.studentId())
+        StudentEntity student = studentRepository.findById(request.studentId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 학생입니다."));
 
         if (saleRecordRepository.existsByStudentAndCourse(student, course)) {
@@ -49,11 +49,17 @@ public class SaleService {
                 .course(course)
                 .student(student)
                 .amount(request.amount())
-                .paidAt(request.paidAt())
-                .comment(request.comment())
                 .build();
 
-        return SaleRecordResponse.from(saleRecordRepository.save(saleRecord));
+        SaleRecordEntity saved = saleRecordRepository.save(saleRecord);
+
+        return SaleResponseDto.RecordDto.builder()
+                .saleId(saved.getId())
+                .courseId(saved.getCourse().getId())
+                .studentId(saved.getStudent().getId())
+                .amount(saved.getAmount())
+                .paidAt(saved.getPaidAt())
+                .build();
     }
 
     @Transactional
@@ -70,16 +76,18 @@ public class SaleService {
                 .amount(request.amount())
                 .canceledAt(request.canceledAt())
                 .build();
+        
+        saleCancelRecordRepository.save(cancelRecord);
 
-        return SaleCancelResponse.from(saleCancelRecordRepository.save(cancelRecord));
+        return SaleCancelResponse.from();
     }
 
     // *** //
     // 조회 //
     // *** //
     @Transactional(readOnly = true)
-    public List<SaleRecordResponse> getSalesByCreator(String creatorId, LocalDateTime from, LocalDateTime to) {
-        CreatorEntity creator = creatorRepository.findByCreatorId(creatorId)
+    public List<SaleRecordResponse> getSalesByCreator(Long creatorId, LocalDateTime from, LocalDateTime to) {
+        CreatorEntity creator = creatorRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
         List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)

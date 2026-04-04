@@ -16,27 +16,27 @@ INSERT IGNORE INTO users (id, username, password, role, created_at, updated_at, 
 (11, 'admin',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9S', 'ADMIN',   '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
 
 -- ========== creator ==========
-INSERT IGNORE INTO creator (id, user_id, creator_id, name, created_at, updated_at, deleted_at) VALUES
-(1, 1, 'creator-1', '김강사', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(2, 2, 'creator-2', '이강사', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(3, 3, 'creator-3', '박강사', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
+INSERT IGNORE INTO creator (id, user_id, name, created_at, updated_at, deleted_at) VALUES
+(1, 1, '김강사', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(2, 2, '이강사', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(3, 3, '박강사', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
 
 -- ========== student ==========
-INSERT IGNORE INTO student (id, user_id, student_id, name, created_at, updated_at, deleted_at) VALUES
-(1,  4,  'student-1', '학생1', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(2,  5,  'student-2', '학생2', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(3,  6,  'student-3', '학생3', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(4,  7,  'student-4', '학생4', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(5,  8,  'student-5', '학생5', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(6,  9,  'student-6', '학생6', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(7,  10, 'student-7', '학생7', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
+INSERT IGNORE INTO student (id, user_id, name, created_at, updated_at, deleted_at) VALUES
+(1,  4,  '학생1', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(2,  5,  '학생2', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(3,  6,  '학생3', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(4,  7,  '학생4', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(5,  8,  '학생5', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(6,  9,  '학생6', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(7,  10, '학생7', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
 
 -- ========== course ==========
-INSERT IGNORE INTO course (id, course_id, title, created_at, updated_at, deleted_at) VALUES
-(1, 'course-1', 'Spring Boot 입문', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(2, 'course-2', 'JPA 실전',         '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(3, 'course-3', 'Kotlin 기초',      '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
-(4, 'course-4', 'MSA 설계',         '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
+INSERT IGNORE INTO course (id, title, created_at, updated_at, deleted_at) VALUES
+(1, 'Spring Boot 입문', '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(2, 'JPA 실전',         '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(3, 'Kotlin 기초',      '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL),
+(4, 'MSA 설계',         '2025-01-01 00:00:00', '2025-01-01 00:00:00', NULL);
 
 -- ========== creator_course ==========
 INSERT IGNORE INTO creator_course (id, creator_id, course_id, created_at, updated_at, deleted_at) VALUES

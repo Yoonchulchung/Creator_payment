@@ -44,7 +44,7 @@ public class SaleController {
     // *** //
     @GetMapping
     public ApiResponse<List<SaleRecordResponse>> getSalesByCreator(
-            @RequestParam String creatorId,
+            @RequestParam Long creatorId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
     ) {

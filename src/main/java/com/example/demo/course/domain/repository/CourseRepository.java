@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
 
-    Optional<CourseEntity> findByCourseId(String courseId);
-
     Optional<CourseEntity> findByTitle(String title);
 
     List<CourseEntity> findAllByDeletedAtIsNull();

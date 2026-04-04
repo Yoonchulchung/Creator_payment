@@ -1,9 +1,9 @@
-package com.example.demo.settlement.presentation.dto;
+package com.example.demo.settlement.presentation.dto.response;
 
 import java.time.YearMonth;
 
 public record SettlementSummaryResponse(
-        String creatorId,
+        Long creatorId,
         YearMonth settlementMonth,
         long totalSales,
         long totalRefunds,

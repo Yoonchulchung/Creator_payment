@@ -1,4 +1,4 @@
-package com.example.demo.settlement.presentation.dto;
+package com.example.demo.settlement.presentation.dto.response;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,7 +10,7 @@ public record SettlementAggregateResponse(
         long totalExpectedPayout
 ) {
     public record CreatorSettlementSummary(
-            String creatorId,
+            Long creatorId,
             String creatorName,
             long totalSales,
             long totalRefunds,

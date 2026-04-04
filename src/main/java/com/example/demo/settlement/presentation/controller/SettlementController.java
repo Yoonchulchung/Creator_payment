@@ -3,8 +3,8 @@ package com.example.demo.settlement.presentation.controller;
 import com.example.demo.global.presentation.ApiResponse;
 import com.example.demo.global.presentation.code.GeneralSuccessCode;
 import com.example.demo.settlement.application.service.SettlementService;
-import com.example.demo.settlement.presentation.dto.SettlementAggregateResponse;
-import com.example.demo.settlement.presentation.dto.SettlementSummaryResponse;
+import com.example.demo.settlement.presentation.dto.response.SettlementAggregateResponse;
+import com.example.demo.settlement.presentation.dto.response.SettlementSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ public class SettlementController {
     // GET /api/settlements/monthly?creatorId=creator-xxxx&month=2025-03
     @GetMapping("/monthly")
     public ApiResponse<SettlementSummaryResponse> getMonthlySettlement(
-            @RequestParam String creatorId,
+            @RequestParam Long creatorId,
             @RequestParam YearMonth month
     ) {
         SettlementSummaryResponse response = settlementService.getMonthlySettlement(creatorId, month);

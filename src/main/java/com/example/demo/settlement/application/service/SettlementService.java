@@ -14,8 +14,8 @@ import com.example.demo.settlement.domain.entity.SettlementEntity;
 import com.example.demo.settlement.domain.enums.SettlementStatus;
 import com.example.demo.settlement.domain.repository.FeeRepository;
 import com.example.demo.settlement.domain.repository.SettlementRepository;
-import com.example.demo.settlement.presentation.dto.SettlementAggregateResponse;
-import com.example.demo.settlement.presentation.dto.SettlementSummaryResponse;
+import com.example.demo.settlement.presentation.dto.response.SettlementAggregateResponse;
+import com.example.demo.settlement.presentation.dto.response.SettlementSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,7 @@ public class SettlementService {
 
         for (CreatorEntity creator : creators) {
             if (settlementRepository.existsByCreatorAndSettlementMonth(creator, targetMonth)) {
-                log.info("이미 정산 완료: creator={}, month={}", creator.getCreatorId(), targetMonth);
+                log.info("이미 정산 완료: creator={}, month={}", creator.getId(), targetMonth);
                 continue;
             }
 
@@ -89,7 +89,7 @@ public class SettlementService {
 
             settlementRepository.save(settlement);
             log.info("정산 생성 완료: creator={}, month={}, expectedPayout={}",
-                    creator.getCreatorId(), targetMonth, expectedPayout);
+                    creator.getId(), targetMonth, expectedPayout);
         }
     }
 
@@ -126,8 +126,8 @@ public class SettlementService {
     // 조회 //
     // **** //
     @Transactional(readOnly = true)
-    public SettlementSummaryResponse getMonthlySettlement(String creatorId, YearMonth month) {
-        CreatorEntity creator = creatorRepository.findByCreatorId(creatorId)
+    public SettlementSummaryResponse getMonthlySettlement(Long creatorId, YearMonth month) {
+        CreatorEntity creator = creatorRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
         LocalDateTime from = month.atDay(1).atStartOfDay();
@@ -185,7 +185,7 @@ public class SettlementService {
                     long expectedPayout = netSales - feeAmount;
 
                     return new SettlementAggregateResponse.CreatorSettlementSummary(
-                            creator.getCreatorId(), creator.getName(),
+                            creator.getId(), creator.getName(),
                             totalSales, totalRefunds, netSales,
                             feeAmount, expectedPayout,
                             sales.size(), cancels.size()

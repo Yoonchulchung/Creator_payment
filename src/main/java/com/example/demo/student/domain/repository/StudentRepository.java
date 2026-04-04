@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
-    Optional<StudentEntity> findByStudentId(String studentId);
-
     Optional<StudentEntity> findByName(String name);
 
     List<StudentEntity> findAllByDeletedAtIsNull();
