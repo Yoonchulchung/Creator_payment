@@ -2,20 +2,14 @@ package com.example.demo.sale.application.service;
 
 import com.example.demo.course.domain.entity.CourseEntity;
 import com.example.demo.course.domain.repository.CourseRepository;
-
 import com.example.demo.creator.domain.entity.CreatorEntity;
-import com.example.demo.creator.domain.repository.CreatorCourseRepository;
 import com.example.demo.creator.domain.repository.CreatorRepository;
-
 import com.example.demo.sale.domain.entity.SaleCancelRecordEntity;
 import com.example.demo.sale.domain.entity.SaleRecordEntity;
-
 import com.example.demo.sale.domain.repository.SaleCancelRecordRepository;
 import com.example.demo.sale.domain.repository.SaleRecordRepository;
-
 import com.example.demo.sale.presentation.dto.response.SaleResponseDto;
 import com.example.demo.sale.presentation.dto.request.SaleRequestDto;
-
 import com.example.demo.student.domain.entity.StudentEntity;
 import com.example.demo.student.domain.repository.StudentRepository;
 
@@ -35,7 +29,6 @@ public class SaleService {
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
     private final CreatorRepository creatorRepository;
-    private final CreatorCourseRepository creatorCourseRepository;
 
     @Transactional
     public SaleResponseDto.Record registerSale(Long userId, SaleRequestDto.Record request) {
@@ -104,10 +97,7 @@ public class SaleService {
         CreatorEntity creator = creatorRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
-        List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)
-                .stream()
-                .map(cc -> cc.getCourse())
-                .toList();
+        List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
 
         List<SaleRecordEntity> saleRecords = (from != null && to != null)
                 ? saleRecordRepository.findAllByCourseInAndPaidAtBetween(courses, from, to)
