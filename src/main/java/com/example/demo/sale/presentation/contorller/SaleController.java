@@ -27,7 +27,7 @@ public class SaleController {
     private final SaleService saleService;
 
     @PostMapping
-    public ApiResponse<SaleResponseDto.Record> registerSale(
+    public ApiResponse<SaleResponseDto.Record> registerSale(    // 학생만 요청
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody SaleRequestDto.Record request
     ) {
@@ -36,7 +36,7 @@ public class SaleController {
     }
 
     @PostMapping("/cancel")
-    public ApiResponse<SaleResponseDto.Cancel> cancelSale(
+    public ApiResponse<SaleResponseDto.Cancel> cancelSale(    // 학생만 요청
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody SaleRequestDto.Cancel request
     ) {

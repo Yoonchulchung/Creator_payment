@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class SaleRequestDto {
 
-    public record Record(Long courseId, Long amount) {}
+    public record Record(Long courseId) {}
 
-    public record Cancel(Long saleId, Long amount, LocalDateTime canceledAt) {}
+    public record Cancel(Long saleId) {}
 }
