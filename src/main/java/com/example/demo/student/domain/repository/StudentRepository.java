@@ -10,5 +10,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
     Optional<StudentEntity> findByName(String name);
 
+    Optional<StudentEntity> findByUserId(Long userId);
+
     List<StudentEntity> findAllByDeletedAtIsNull();
 }

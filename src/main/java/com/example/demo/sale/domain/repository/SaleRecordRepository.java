@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface SaleRecordRepository extends JpaRepository<SaleRecordEntity, Long> {
 
-    Optional<SaleRecordEntity> findBySaleId(String saleId);
-
     List<SaleRecordEntity> findAllByStudent(StudentEntity student);
 
     List<SaleRecordEntity> findAllByCourse(CourseEntity course);
