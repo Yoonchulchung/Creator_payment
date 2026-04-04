@@ -1,13 +1,12 @@
-package com.example.demo.global.infrastructure.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.example.demo.global.infrastructure.config.swagger;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
@@ -31,8 +30,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("Spot API")
-                .description("Spot 픽업 서비스 API 문서")
+                .title("Creator Payment API")
+                .description("크리에이터 정산 플랫폼 API 문서")
                 .version("1.0.0");
     }
 }
