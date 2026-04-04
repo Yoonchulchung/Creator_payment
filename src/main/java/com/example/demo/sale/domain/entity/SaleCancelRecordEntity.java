@@ -30,9 +30,9 @@ public class SaleCancelRecordEntity extends BaseEntity {
     private LocalDateTime canceledAt;
 
     @Builder
-    public SaleCancelRecordEntity(SaleRecordEntity saleRecord, Long amount, LocalDateTime canceledAt) {
+    public SaleCancelRecordEntity(SaleRecordEntity saleRecord, Long amount) {
         this.saleRecord = saleRecord;
         this.amount = amount;
-        this.canceledAt = canceledAt;
+        this.canceledAt = LocalDateTime.now();
     }
 }

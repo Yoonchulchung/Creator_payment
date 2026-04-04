@@ -85,7 +85,6 @@ public class SaleService {
         SaleCancelRecordEntity cancelRecord = SaleCancelRecordEntity.builder()
                 .saleRecord(saleRecord)
                 .amount(request.amount())
-                .canceledAt(request.canceledAt())
                 .build();
 
         SaleCancelRecordEntity saved = saleCancelRecordRepository.save(cancelRecord);
@@ -139,5 +138,5 @@ public class SaleService {
                 .build();
     }
 
-    
+
 }
