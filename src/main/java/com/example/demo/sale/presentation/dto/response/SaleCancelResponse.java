@@ -1,4 +1,4 @@
-package com.example.demo.sale.presentation.dto;
+package com.example.demo.sale.presentation.dto.response;
 
 import com.example.demo.sale.domain.entity.SaleCancelRecordEntity;
 

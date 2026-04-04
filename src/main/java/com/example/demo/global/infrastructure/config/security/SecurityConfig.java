@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -50,7 +51,7 @@ public class SecurityConfig {
         http.httpBasic(auth -> auth.disable());
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("OPTIONS", "/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/login", "/api/join", "/swagger-ui/*", "/v3/api-docs", "/v3/api-docs/*").permitAll()
                 .anyRequest().authenticated()
         );
