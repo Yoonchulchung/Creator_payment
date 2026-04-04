@@ -10,5 +10,7 @@ public interface SaleCancelRecordRepository extends JpaRepository<SaleCancelReco
 
     List<SaleCancelRecordEntity> findAllBySaleRecord(SaleRecordEntity saleRecord);
 
+    List<SaleCancelRecordEntity> findAllBySaleRecordIn(List<SaleRecordEntity> saleRecords);
+
     boolean existsBySaleRecord(SaleRecordEntity saleRecord);
 }

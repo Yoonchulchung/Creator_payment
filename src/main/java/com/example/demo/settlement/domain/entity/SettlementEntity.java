@@ -13,7 +13,9 @@ import java.time.YearMonth;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "settlement")
+@Table(name = "settlement", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"creator_id", "settlement_month"}) // 동일 기간 중복 정산 방지 로직. 
+})
 public class SettlementEntity extends BaseEntity {
 
     @Id
@@ -26,7 +28,7 @@ public class SettlementEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fee_id", nullable = false)
-    private FeeEntity fee;
+    private FeeEntity fee; // 수수료 몇 % 적용인지 확인
 
     @Column(nullable = false)
     private YearMonth settlementMonth;
@@ -41,14 +43,14 @@ public class SettlementEntity extends BaseEntity {
     private Long netSales;
 
     @Column(nullable = false)
-    private Long feeAmount;
+    private Long feeAmount; // 수수료
 
     @Column(nullable = false)
-    private Long expectedPayout;
+    private Long expectedPayout; // 정산 예정 금액
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SettlementStatus status;
+    private SettlementStatus status; // PENDING -> CONFIRMED -> PAID
 
     @Builder
     public SettlementEntity(CreatorEntity creator, FeeEntity fee, YearMonth settlementMonth,
@@ -63,5 +65,9 @@ public class SettlementEntity extends BaseEntity {
         this.feeAmount = feeAmount;
         this.expectedPayout = expectedPayout;
         this.status = SettlementStatus.PENDING;
+    }
+
+    public void updateStatus(SettlementStatus status) {
+        this.status = status;
     }
 }

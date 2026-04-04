@@ -38,6 +38,10 @@ public class SaleController {
         return ApiResponse.onSuccess(GeneralSuccessCode.GOOD_REQUEST, response);
     }
 
+
+    // *** //
+    // 조회 //
+    // *** //
     @GetMapping
     public ApiResponse<List<SaleRecordResponse>> getSalesByCreator(
             @RequestParam String creatorId,

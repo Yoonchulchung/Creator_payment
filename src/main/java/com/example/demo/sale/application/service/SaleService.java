@@ -74,6 +74,9 @@ public class SaleService {
         return SaleCancelResponse.from(saleCancelRecordRepository.save(cancelRecord));
     }
 
+    // *** //
+    // 조회 //
+    // *** //
     @Transactional(readOnly = true)
     public List<SaleRecordResponse> getSalesByCreator(String creatorId, LocalDateTime from, LocalDateTime to) {
         CreatorEntity creator = creatorRepository.findByCreatorId(creatorId)
