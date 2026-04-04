@@ -6,5 +6,5 @@ public class SaleRequestDto {
 
     public record Record(Long courseId) {}
 
-    public record Cancel(Long saleId) {}
+    public record Cancel(Long saleId, Long amount) {}
 }

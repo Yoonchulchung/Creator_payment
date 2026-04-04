@@ -48,13 +48,13 @@ public class SaleController {
     // *** //
     // 조회 //
     // *** //
-    // @GetMapping
-    // public ApiResponse<List<SaleResponseDto.Record>> getSalesByCreator(
-    //         @RequestParam Long creatorId,
-    //         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-    //         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
-    // ) {
-    //     List<SaleResponseDto.Record> response = saleService.getSalesByCreator(creatorId, from, to);
-    //     return ApiResponse.onSuccess(GeneralSuccessCode.GOOD_REQUEST, response);
-    // }
+    @GetMapping
+    public ApiResponse<SaleResponseDto.SaleList> getSalesByCreator(
+            @RequestParam Long creatorId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
+    ) {
+        SaleResponseDto.SaleList response = saleService.getSalesByCreator(creatorId, from, to);
+        return ApiResponse.onSuccess(GeneralSuccessCode.GOOD_REQUEST, response);
+    }
 }

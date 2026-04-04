@@ -18,7 +18,8 @@ public class SaleCancelRecordEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 강의에서 부분 취소를 할 수 있는 아이템이 있으면, ManyToOne으로 변경 필요.
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_record_id", nullable = false)
     private SaleRecordEntity saleRecord;
 

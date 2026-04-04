@@ -76,10 +76,12 @@ public class SaleService {
         SaleRecordEntity saleRecord = saleRecordRepository.findById(request.saleId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 판매 내역입니다."));
 
+        // 강의에서 선택적으로 환불 요청이 필요하면 아래 조건문 삭제 필요.
         if (saleCancelRecordRepository.existsBySaleRecord(saleRecord)) {
             throw new IllegalStateException("이미 취소된 판매 내역입니다.");
         }
 
+        // amount는 BE에서 관리하는게 맞는데, 환불 정책을 모르기 때문에 얼마큼 빼야할지 몰라 FE에서 요청하도록 구성.
         SaleCancelRecordEntity cancelRecord = SaleCancelRecordEntity.builder()
                 .saleRecord(saleRecord)
                 .amount(request.amount())
@@ -98,22 +100,44 @@ public class SaleService {
     // *** //
     // 조회 //
     // *** //
-//     @Transactional(readOnly = true)
-//     public List<SaleResponseDto.Record> getSalesByCreator(Long creatorId, LocalDateTime from, LocalDateTime to) {
-//         CreatorEntity creator = creatorRepository.findById(creatorId)
-//                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
+    @Transactional(readOnly = true)
+    public SaleResponseDto.SaleList getSalesByCreator(Long creatorId, LocalDateTime from, LocalDateTime to) {
+        CreatorEntity creator = creatorRepository.findById(creatorId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
-//         List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)
-//                 .stream()
-//                 .map(cc -> cc.getCourse())
-//                 .toList();
+        List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)
+                .stream()
+                .map(cc -> cc.getCourse())
+                .toList();
 
-//         List<SaleRecordEntity> saleRecords = (from != null && to != null)
-//                 ? saleRecordRepository.findAllByCourseInAndPaidAtBetween(courses, from, to)
-//                 : saleRecordRepository.findAllByCourseIn(courses);
+        List<SaleRecordEntity> saleRecords = (from != null && to != null)
+                ? saleRecordRepository.findAllByCourseInAndPaidAtBetween(courses, from, to)
+                : saleRecordRepository.findAllByCourseIn(courses);
 
-//         return saleRecords.stream()
-//                 .map(SaleRecordResponse::from)
-//                 .toList();
-//     }
+        List<SaleResponseDto.Record> records = saleRecords.stream()
+                .map(s -> SaleResponseDto.Record.builder()
+                        .saleId(s.getId())
+                        .courseId(s.getCourse().getId())
+                        .studentId(s.getStudent().getId())
+                        .amount(s.getAmount())
+                        .paidAt(s.getPaidAt())
+                        .build())
+                .toList();
+
+        List<SaleResponseDto.Cancel> cancels = saleCancelRecordRepository.findAllBySaleRecordIn(saleRecords)
+                .stream()
+                .map(c -> SaleResponseDto.Cancel.builder()
+                        .saleId(c.getSaleRecord().getId())
+                        .amount(c.getAmount())
+                        .canceledAt(c.getCanceledAt())
+                        .build())
+                .toList();
+
+        return SaleResponseDto.SaleList.builder()
+                .record(records)
+                .cancel(cancels)
+                .build();
+    }
+
+    
 }
