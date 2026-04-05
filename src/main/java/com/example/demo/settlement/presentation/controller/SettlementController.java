@@ -25,6 +25,7 @@ public class SettlementController implements SettlementControllerSwagger {
     private final SettlementService settlementService;
 
     // 크리에이터별 월별 정산 조회
+    @PreAuthorize("hasRole('CREATOR')")
     @GetMapping("/inquiry/monthly")
     public ApiResponse<SettlementResponseDto.MonthlyInquiry> getMonthlySettlement(
             @RequestParam Long creatorId,
@@ -37,11 +38,11 @@ public class SettlementController implements SettlementControllerSwagger {
     // 운영자용 기간별 전체 정산 집계
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/aggregate")
-    public ApiResponse<List<SettlementResponseDto.Aggregate>> getSettlementAggregate(
+    public ApiResponse<SettlementResponseDto.Aggregate> getSettlementAggregate(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
     ) {
-        List<SettlementResponseDto.Aggregate> response = settlementService.getSettlementAggregate(from, to);
+        SettlementResponseDto.Aggregate response = settlementService.getSettlementAggregate(from, to);
         return ApiResponse.onSuccess(GeneralSuccessCode.GOOD_REQUEST, response);
     }
 }

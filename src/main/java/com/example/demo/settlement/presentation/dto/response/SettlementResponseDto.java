@@ -1,6 +1,7 @@
 package com.example.demo.settlement.presentation.dto.response;
 
 import java.time.YearMonth;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,13 +15,18 @@ public class SettlementResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Aggregate {
-        private long totalSales;
-        private long totalRefunds;
-        private long netSales;
-        private long feeAmount;
+        private List<creator> creators;
+        private long totalExpectedPayout;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class creator {
+        private Long creatorId;
+        private String creatorName;
         private long expectedPayout;
-        private int saleCount;
-        private int cancelCount;
     }
 
     @Getter
@@ -28,7 +34,6 @@ public class SettlementResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MonthlyInquiry {
-        private Long creatorId;
         private YearMonth settlementMonth;
         private long totalSales;
         private long totalRefunds;

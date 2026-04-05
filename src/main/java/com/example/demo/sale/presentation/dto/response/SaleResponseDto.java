@@ -15,8 +15,8 @@ public class SaleResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SaleList {
-        private List<Record> record;
-        private List<Cancel> cancel;
+        private List<Record> records;
+        private List<Cancel> cancels;
     }
 
     @Getter

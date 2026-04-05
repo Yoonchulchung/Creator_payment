@@ -1,5 +1,6 @@
 package com.example.demo.sale.presentation.swagger;
 
+import com.example.demo.global.infrastructure.auth.security.CustomUserDetails;
 import com.example.demo.global.presentation.ApiResponse;
 import com.example.demo.sale.presentation.dto.request.SaleRequestDto;
 import com.example.demo.sale.presentation.dto.response.SaleResponseDto;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,6 +28,7 @@ public interface SaleControllerSwagger {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 구매한 강의")
     })
     ApiResponse<SaleResponseDto.Record> registerSale(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody SaleRequestDto.Record request
     );
 
@@ -37,6 +40,7 @@ public interface SaleControllerSwagger {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 취소된 판매")
     })
     ApiResponse<SaleResponseDto.Cancel> cancelSale(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody SaleRequestDto.Cancel request
     );
 

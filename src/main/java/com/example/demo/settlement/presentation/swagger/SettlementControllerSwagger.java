@@ -35,7 +35,7 @@ public interface SettlementControllerSwagger {
                     content = @Content(schema = @Schema(implementation = SettlementResponseDto.Aggregate.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "권한 없음 (ADMIN만 접근 가능)")
     })
-    ApiResponse<List<SettlementResponseDto.Aggregate>> getSettlementAggregate(
+    ApiResponse<SettlementResponseDto.Aggregate> getSettlementAggregate(
             @Parameter(description = "시작일 (예: 2025-01-01)", required = true)
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @Parameter(description = "종료일 (예: 2025-03-31)", required = true)

@@ -148,7 +148,6 @@ public class SettlementService {
         long expectedPayout = netSales - feeAmount;
 
         return SettlementResponseDto.MonthlyInquiry.builder()
-                .creatorId(creatorId)
                 .settlementMonth(month)
                 .totalSales(totalSales)
                 .totalRefunds(totalRefunds)
@@ -161,11 +160,11 @@ public class SettlementService {
     }
 
     @Transactional(readOnly = true)
-    public List<SettlementResponseDto.Aggregate> getSettlementAggregate(LocalDate from, LocalDate to) {
+    public SettlementResponseDto.Aggregate getSettlementAggregate(LocalDate from, LocalDate to) {
         LocalDateTime fromDt = from.atStartOfDay();
         LocalDateTime toDt = to.atTime(23, 59, 59);
 
-        return creatorRepository.findAll().stream()
+        List<SettlementResponseDto.creator> creators = creatorRepository.findAll().stream()
                 .map(creator -> {
                     List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
 
@@ -183,19 +182,22 @@ public class SettlementService {
                     long feeAmount = (long) (netSales * 0.20);
                     long expectedPayout = netSales - feeAmount;
 
-                    return SettlementResponseDto.Aggregate.builder()
+                    return SettlementResponseDto.creator.builder()
                             .creatorId(creator.getId())
                             .creatorName(creator.getName())
-                            .totalSales(totalSales)
-                            .totalRefunds(totalRefunds)
-                            .netSales(netSales)
-                            .feeAmount(feeAmount)
                             .expectedPayout(expectedPayout)
-                            .saleCount(sales.size())
-                            .cancelCount(cancels.size())
                             .build();
                 })
-                .filter(s -> s.getSaleCount() > 0)
+                .filter(c -> c.getExpectedPayout() > 0)
                 .toList();
+
+        long totalExpectedPayout = creators.stream()
+                .mapToLong(SettlementResponseDto.creator::getExpectedPayout)
+                .sum();
+
+        return SettlementResponseDto.Aggregate.builder()
+                .creators(creators)
+                .totalExpectedPayout(totalExpectedPayout)
+                .build();
     }
 }
