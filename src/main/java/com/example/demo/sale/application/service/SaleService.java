@@ -46,7 +46,7 @@ public class SaleService {
         SaleRecordEntity saleRecord = SaleRecordEntity.builder()
                 .course(course)
                 .student(student)
-                .amount(course.amount())
+                .amount(course.getAmount())
                 .build();
 
         SaleRecordEntity saved = saleRecordRepository.save(saleRecord);

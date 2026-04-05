@@ -1,9 +1,8 @@
 package com.example.demo.settlement.application.service;
 
 import com.example.demo.course.domain.entity.CourseEntity;
-import com.example.demo.creator.domain.entity.CreatorCourseEntity;
+import com.example.demo.course.domain.repository.CourseRepository;
 import com.example.demo.creator.domain.entity.CreatorEntity;
-import com.example.demo.creator.domain.repository.CreatorCourseRepository;
 import com.example.demo.creator.domain.repository.CreatorRepository;
 import com.example.demo.sale.domain.entity.SaleCancelRecordEntity;
 import com.example.demo.sale.domain.entity.SaleRecordEntity;
@@ -14,8 +13,7 @@ import com.example.demo.settlement.domain.entity.SettlementEntity;
 import com.example.demo.settlement.domain.enums.SettlementStatus;
 import com.example.demo.settlement.domain.repository.FeeRepository;
 import com.example.demo.settlement.domain.repository.SettlementRepository;
-import com.example.demo.settlement.presentation.dto.response.SettlementAggregateResponse;
-import com.example.demo.settlement.presentation.dto.response.SettlementSummaryResponse;
+import com.example.demo.settlement.presentation.dto.response.SettlementResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,7 @@ import java.util.List;
 public class SettlementService {
 
     private final CreatorRepository creatorRepository;
-    private final CreatorCourseRepository creatorCourseRepository;
+    private final CourseRepository courseRepository;
     private final SaleRecordRepository saleRecordRepository;
     private final SaleCancelRecordRepository saleCancelRecordRepository;
     private final FeeRepository feeRepository;
@@ -57,13 +55,12 @@ public class SettlementService {
                 continue;
             }
 
-            List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)
-                    .stream()
-                    .map(CreatorCourseEntity::getCourse)
-                    .toList();
+            // creator의 담당 course 확인.
+            List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
 
             if (courses.isEmpty()) continue;
 
+            // 결제 기록 확인.
             List<SaleRecordEntity> sales = saleRecordRepository
                     .findAllByCourseInAndPaidAtBetween(courses, from, to);
 
@@ -72,6 +69,7 @@ public class SettlementService {
             List<SaleCancelRecordEntity> cancels = saleCancelRecordRepository.findAllBySaleRecordIn(sales);
             long totalRefunds = cancels.stream().mapToLong(SaleCancelRecordEntity::getAmount).sum();
 
+            // 최종 정산 로직
             long netSales = totalSales - totalRefunds;
             long feeAmount = (long) (netSales * fee.getFeeRate());
             long expectedPayout = netSales - feeAmount;
@@ -126,15 +124,14 @@ public class SettlementService {
     // 조회 //
     // **** //
     @Transactional(readOnly = true)
-    public SettlementSummaryResponse getMonthlySettlement(Long creatorId, YearMonth month) {
+    public SettlementResponseDto.Summary getMonthlySettlement(Long creatorId, YearMonth month) {
         CreatorEntity creator = creatorRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
         LocalDateTime from = month.atDay(1).atStartOfDay();
         LocalDateTime to = month.atEndOfMonth().atTime(23, 59, 59);
 
-        List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)
-                .stream().map(CreatorCourseEntity::getCourse).toList();
+        List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
 
         List<SaleRecordEntity> sales = courses.isEmpty()
                 ? List.of()
@@ -150,25 +147,27 @@ public class SettlementService {
         long feeAmount = (long) (netSales * 0.20);
         long expectedPayout = netSales - feeAmount;
 
-        return new SettlementSummaryResponse(
-                creatorId, month,
-                totalSales, totalRefunds, netSales,
-                feeAmount, expectedPayout,
-                sales.size(), cancels.size()
-        );
+        return SettlementResponseDto.Summary.builder()
+                .creatorId(creatorId)
+                .settlementMonth(month)
+                .totalSales(totalSales)
+                .totalRefunds(totalRefunds)
+                .netSales(netSales)
+                .feeAmount(feeAmount)
+                .expectedPayout(expectedPayout)
+                .saleCount(sales.size())
+                .cancelCount(cancels.size())
+                .build();
     }
 
     @Transactional(readOnly = true)
-    public SettlementAggregateResponse getSettlementAggregate(LocalDate from, LocalDate to) {
+    public List<SettlementResponseDto.Aggregate> getSettlementAggregate(LocalDate from, LocalDate to) {
         LocalDateTime fromDt = from.atStartOfDay();
         LocalDateTime toDt = to.atTime(23, 59, 59);
 
-        List<CreatorEntity> creators = creatorRepository.findAll();
-
-        List<SettlementAggregateResponse.CreatorSettlementSummary> summaries = creators.stream()
+        return creatorRepository.findAll().stream()
                 .map(creator -> {
-                    List<CourseEntity> courses = creatorCourseRepository.findAllByCreator(creator)
-                            .stream().map(CreatorCourseEntity::getCourse).toList();
+                    List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
 
                     List<SaleRecordEntity> sales = courses.isEmpty()
                             ? List.of()
@@ -184,20 +183,19 @@ public class SettlementService {
                     long feeAmount = (long) (netSales * 0.20);
                     long expectedPayout = netSales - feeAmount;
 
-                    return new SettlementAggregateResponse.CreatorSettlementSummary(
-                            creator.getId(), creator.getName(),
-                            totalSales, totalRefunds, netSales,
-                            feeAmount, expectedPayout,
-                            sales.size(), cancels.size()
-                    );
+                    return SettlementResponseDto.Aggregate.builder()
+                            .creatorId(creator.getId())
+                            .creatorName(creator.getName())
+                            .totalSales(totalSales)
+                            .totalRefunds(totalRefunds)
+                            .netSales(netSales)
+                            .feeAmount(feeAmount)
+                            .expectedPayout(expectedPayout)
+                            .saleCount(sales.size())
+                            .cancelCount(cancels.size())
+                            .build();
                 })
-                .filter(s -> s.saleCount() > 0)
+                .filter(s -> s.getSaleCount() > 0)
                 .toList();
-
-        long totalExpectedPayout = summaries.stream()
-                .mapToLong(SettlementAggregateResponse.CreatorSettlementSummary::expectedPayout)
-                .sum();
-
-        return new SettlementAggregateResponse(from, to, summaries, totalExpectedPayout);
     }
 }
