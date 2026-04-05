@@ -6,6 +6,7 @@ import com.example.demo.sale.application.service.SaleService;
 import com.example.demo.sale.presentation.dto.request.SaleRequestDto;
 import com.example.demo.sale.presentation.dto.response.SaleResponseDto;
 import com.example.demo.global.infrastructure.auth.security.CustomUserDetails;
+import com.example.demo.sale.presentation.swagger.SaleControllerSwagger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/sales")
 @RequiredArgsConstructor
-public class SaleController {
+public class SaleController implements SaleControllerSwagger {
 
     private final SaleService saleService;
 
