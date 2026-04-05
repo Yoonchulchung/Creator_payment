@@ -6,6 +6,7 @@ import com.example.demo.settlement.application.service.SettlementService;
 import com.example.demo.settlement.presentation.dto.response.SettlementResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,7 @@ public class SettlementController {
 
     // 운영자용 기간별 전체 정산 집계
     // GET /api/settlements/aggregate?from=2025-01-01&to=2025-03-31
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/aggregate")
     public ApiResponse<List<SettlementResponseDto.Aggregate>> getSettlementAggregate(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,

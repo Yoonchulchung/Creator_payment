@@ -61,10 +61,7 @@ public class SaleService {
     }
 
     @Transactional
-    public SaleResponseDto.Cancel cancelSale(Long userId, SaleRequestDto.Cancel request) {
-
-        StudentEntity student = studentRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalStateException("학생 권한이 없습니다."));
+    public SaleResponseDto.Cancel cancelSale(SaleRequestDto.Cancel request) {
                 
         SaleRecordEntity saleRecord = saleRecordRepository.findById(request.saleId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 판매 내역입니다."));
