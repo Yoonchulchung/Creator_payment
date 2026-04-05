@@ -124,7 +124,7 @@ public class SettlementService {
     // 조회 //
     // **** //
     @Transactional(readOnly = true)
-    public SettlementResponseDto.Summary getMonthlySettlement(Long creatorId, YearMonth month) {
+    public SettlementResponseDto.MonthlyInquiry getMonthlySettlement(Long creatorId, YearMonth month) {
         CreatorEntity creator = creatorRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
@@ -147,7 +147,7 @@ public class SettlementService {
         long feeAmount = (long) (netSales * 0.20);
         long expectedPayout = netSales - feeAmount;
 
-        return SettlementResponseDto.Summary.builder()
+        return SettlementResponseDto.MonthlyInquiry.builder()
                 .creatorId(creatorId)
                 .settlementMonth(month)
                 .totalSales(totalSales)

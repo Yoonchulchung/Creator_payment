@@ -24,12 +24,12 @@ public class SettlementController {
 
     // 크리에이터별 월별 정산 조회
     // GET /api/settlements/monthly?creatorId=xxxx&month=2025-03
-    @GetMapping("/monthly")
-    public ApiResponse<SettlementResponseDto.Summary> getMonthlySettlement(
+    @GetMapping("/inquiry/monthly")
+    public ApiResponse<SettlementResponseDto.MonthlyInquiry> getMonthlySettlement(
             @RequestParam Long creatorId,
             @RequestParam YearMonth month
     ) {
-        SettlementResponseDto.Summary response = settlementService.getMonthlySettlement(creatorId, month);
+        SettlementResponseDto.MonthlyInquiry response = settlementService.getMonthlySettlement(creatorId, month);
         return ApiResponse.onSuccess(GeneralSuccessCode.GOOD_REQUEST, response);
     }
 

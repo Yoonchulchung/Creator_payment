@@ -14,8 +14,6 @@ public class SettlementResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Aggregate {
-        private Long creatorId;
-        private String creatorName;
         private long totalSales;
         private long totalRefunds;
         private long netSales;
@@ -29,7 +27,7 @@ public class SettlementResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Summary {
+    public static class MonthlyInquiry {
         private Long creatorId;
         private YearMonth settlementMonth;
         private long totalSales;
