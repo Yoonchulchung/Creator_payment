@@ -128,67 +128,32 @@ public class SettlementService {
         CreatorEntity creator = creatorRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크리에이터입니다."));
 
-        LocalDateTime from = month.atDay(1).atStartOfDay();
-        LocalDateTime to = month.atEndOfMonth().atTime(23, 59, 59);
-
-        List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
-
-        List<SaleRecordEntity> sales = courses.isEmpty()
-                ? List.of()
-                : saleRecordRepository.findAllByCourseInAndPaidAtBetween(courses, from, to);
-
-        List<SaleCancelRecordEntity> cancels = sales.isEmpty()
-                ? List.of()
-                : saleCancelRecordRepository.findAllBySaleRecordIn(sales);
-
-        long totalSales = sales.stream().mapToLong(SaleRecordEntity::getAmount).sum();
-        long totalRefunds = cancels.stream().mapToLong(SaleCancelRecordEntity::getAmount).sum();
-        long netSales = totalSales - totalRefunds;
-        long feeAmount = (long) (netSales * 0.20);
-        long expectedPayout = netSales - feeAmount;
+        SettlementEntity settlement = settlementRepository.findByCreatorAndSettlementMonth(creator, month)
+                .orElseThrow(() -> new IllegalArgumentException("해당 월의 정산 데이터가 없습니다."));
 
         return SettlementResponseDto.MonthlyInquiry.builder()
-                .settlementMonth(month)
-                .totalSales(totalSales)
-                .totalRefunds(totalRefunds)
-                .netSales(netSales)
-                .feeAmount(feeAmount)
-                .expectedPayout(expectedPayout)
-                .saleCount(sales.size())
-                .cancelCount(cancels.size())
+                .settlementMonth(settlement.getSettlementMonth())
+                .totalSales(settlement.getTotalSales())
+                .totalRefunds(settlement.getTotalRefunds())
+                .netSales(settlement.getNetSales())
+                .feeAmount(settlement.getFeeAmount())
+                .expectedPayout(settlement.getExpectedPayout())
                 .build();
     }
 
     @Transactional(readOnly = true)
     public SettlementResponseDto.Aggregate getSettlementAggregate(LocalDate from, LocalDate to) {
-        LocalDateTime fromDt = from.atStartOfDay();
-        LocalDateTime toDt = to.atTime(23, 59, 59);
+        YearMonth fromMonth = YearMonth.from(from);
+        YearMonth toMonth = YearMonth.from(to);
 
-        List<SettlementResponseDto.creator> creators = creatorRepository.findAll().stream()
-                .map(creator -> {
-                    List<CourseEntity> courses = courseRepository.findAllByCreator(creator);
-
-                    List<SaleRecordEntity> sales = courses.isEmpty()
-                            ? List.of()
-                            : saleRecordRepository.findAllByCourseInAndPaidAtBetween(courses, fromDt, toDt);
-
-                    List<SaleCancelRecordEntity> cancels = sales.isEmpty()
-                            ? List.of()
-                            : saleCancelRecordRepository.findAllBySaleRecordIn(sales);
-
-                    long totalSales = sales.stream().mapToLong(SaleRecordEntity::getAmount).sum();
-                    long totalRefunds = cancels.stream().mapToLong(SaleCancelRecordEntity::getAmount).sum();
-                    long netSales = totalSales - totalRefunds;
-                    long feeAmount = (long) (netSales * 0.20);
-                    long expectedPayout = netSales - feeAmount;
-
-                    return SettlementResponseDto.creator.builder()
-                            .creatorId(creator.getId())
-                            .creatorName(creator.getName())
-                            .expectedPayout(expectedPayout)
-                            .build();
-                })
-                .filter(c -> c.getExpectedPayout() > 0)
+        List<SettlementResponseDto.creator> creators = settlementRepository
+                .findAllBySettlementMonthBetween(fromMonth, toMonth)
+                .stream()
+                .map(s -> SettlementResponseDto.creator.builder()
+                        .creatorId(s.getCreator().getId())
+                        .creatorName(s.getCreator().getName())
+                        .expectedPayout(s.getExpectedPayout())
+                        .build())
                 .toList();
 
         long totalExpectedPayout = creators.stream()

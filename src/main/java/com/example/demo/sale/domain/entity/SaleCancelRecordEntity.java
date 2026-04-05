@@ -35,4 +35,4 @@ public class SaleCancelRecordEntity extends BaseEntity {
         this.amount = amount;
         this.canceledAt = LocalDateTime.now();
     }
-}
+}   

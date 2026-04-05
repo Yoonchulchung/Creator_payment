@@ -15,4 +15,6 @@ public interface SettlementRepository extends JpaRepository<SettlementEntity, Lo
     Optional<SettlementEntity> findByCreatorAndSettlementMonth(CreatorEntity creator, YearMonth settlementMonth);
 
     List<SettlementEntity> findAllBySettlementMonth(YearMonth settlementMonth);
+
+    List<SettlementEntity> findAllBySettlementMonthBetween(YearMonth from, YearMonth to);
 }
